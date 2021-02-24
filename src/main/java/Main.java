@@ -3,11 +3,11 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 
-class Main {
+public class Main {
 
     public static String run(String[] args) throws FileNotFoundException {
-
-
+        int MIN_RESPONSE_CODE = 500;
+        int MAX_RESPONSE_CODE = 600;
         double allowedProcessTime = 0;
         double minUptimePercents = 0;
         boolean test = false;
@@ -33,14 +33,13 @@ class Main {
         StringBuilder toReturn = new StringBuilder();
         double responseCount = 0;
         double responseWithErrors = 0;
-        String[] newLine = new String[0];
         String entranceLogTime = "";
 
         while (in.hasNextLine()) {
 
             String line = in.nextLine();
 
-            newLine = line.split(" ");
+            String[] newLine = line.split(" ");
             int responseCode = Integer.parseInt(newLine[8]);
             float processTime = Float.parseFloat(newLine[10]);
             responseCount++;
@@ -49,7 +48,8 @@ class Main {
                 entranceLogTime = newLine[3].substring(1);
             }
 
-            if ((responseCode >= 500 && responseCode < 600) || (processTime > allowedProcessTime)) {
+            if ((responseCode >= MIN_RESPONSE_CODE && responseCode < MAX_RESPONSE_CODE) ||
+                    (processTime > allowedProcessTime)) {
 
                 responseWithErrors++;
                 double uptimeWithErrsPercents = 100 - (responseWithErrors / responseCount) * 100;
@@ -59,7 +59,9 @@ class Main {
                         System.out.println(entranceLogTime + ' ' + newLine[3].substring(1) + ' ' + uptimeWithErrsPercents);
 
                     } else {
-                        toReturn.append(entranceLogTime).append(' ').append(newLine[3].substring(1)).append(' ').append(uptimeWithErrsPercents).append('\n');
+                        toReturn.append(entranceLogTime).append(' ').
+                                append(newLine[3].substring(1)).append(' ').
+                                append(uptimeWithErrsPercents).append('\n');
                     }
                     responseCount = 0;
                     responseWithErrors = 0;
@@ -68,7 +70,6 @@ class Main {
             }
         }
         if (test) {
-            // System.out.println(toReturn);
             return toReturn.toString();
         }
         return null;

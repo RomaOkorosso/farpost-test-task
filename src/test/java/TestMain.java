@@ -1,90 +1,69 @@
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.*;
 
-class Processor {
-    void processInput(Reader r) {
-
-    }
-}
-
-class MyFile {
-    public static void createFile(String filename) {
-        try {
-            File myObj = new File(filename);
-            myObj.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void writeToFile(String filename, String textToWrite) {
-        /** Write some text into Filename
-         * Await int String[] zero index Filename
-         * first index text to paste **/
-        try {
-            FileWriter myWriter = new FileWriter(filename);
-            myWriter.write(textToWrite);
-            myWriter.close();
-
-        } catch (IOException err) {
-            err.printStackTrace();
-        }
-    }
-
-    public static void delete(String filename) {
-        try {
-            File f = new File(filename);
-            f.delete();
-        } catch (Exception err) {
-            System.err.println(err.getLocalizedMessage());
-        }
-    }
-}
 
 public class TestMain {
+    private void createFileAndWriteTest(String test) throws IOException {
+        String filename = "access.log";
+        File testFile = new File(filename);
+        boolean check = testFile.createNewFile();
+        //System.out.println("CHECK CREATE FILE= " + check);
+//        if (!check) {
+//            fail("cant create file");
+//        }
+        FileWriter writer = new FileWriter(filename);
+        writer.write(test);
+        writer.close();
+    }
+
+
+    private void deleteTestFile() {
+        File testFile = new File("access.log");
+        boolean check = testFile.delete();
+        //System.out.println("CHECK WRITE TO FILE= " + check);
+//        if (!check) {
+//            fail("cant delete file");
+//        }
+    }
 
 
     @Test
-    public void testAllBadResponse() throws FileNotFoundException {
+    public void testAllBadResponse() throws IOException {
         String test = "192.168.32.181 - - [14/06/2015:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 520 2 44.510983 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2016:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 200 2 144.510983 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2017:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 502 2 544.510983 \"-\" \"@list-item-updater\" prio:0";
 
-        String filename = "access.log";
-        MyFile.createFile(filename);
-        MyFile.writeToFile(filename, test);
-
+        createFileAndWriteTest(test);
         String goodResult = "14/06/2015:16:47:02 14/06/2015:16:47:02 0.0\n" +
                 "14/06/2016:16:47:02 14/06/2016:16:47:02 0.0\n" +
                 "14/06/2017:16:47:02 14/06/2017:16:47:02 0.0\n";
 
         String resToCheck = Main.run("-u 95 -t 50 -test".split(" "));
-        MyFile.delete(filename);
+        deleteTestFile();
         assertEquals(goodResult, resToCheck);
     }
 
+
     @Test
-    public void testAllGoodResponse() throws FileNotFoundException {
+    public void testAllGoodResponse() throws IOException {
         String test = "192.168.32.181 - - [14/06/2015:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 200 2 44.510983 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2016:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 200 2 44.510983 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2017:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 202 2 44.510983 \"-\" \"@list-item-updater\" prio:0";
 
-        String filename = "access.log";
-        MyFile.createFile(filename);
-        MyFile.writeToFile(filename, test);
-
+        createFileAndWriteTest(test);
         String goodResult = "";
 
         String resToCheck = Main.run("-u 95 -t 50 -test".split(" "));
-        MyFile.delete(filename);
+        deleteTestFile();
         assertEquals(goodResult, resToCheck);
     }
 
     @Test
-    public void testNormalInput() throws FileNotFoundException {
+    public void testNormalInput() throws IOException {
         String test = "192.168.32.181 - - [14/06/2010:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1\" 200 2 44.510983 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2011:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=7ae28555 HTTP/1.1\" 200 2 23.251219 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2012:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=e356713 HTTP/1.1\" 200 2 30.164372 \"-\" \"@list-item-updater\" prio:0\n" +
@@ -98,9 +77,7 @@ public class TestMain {
                 "192.168.32.181 - - [14/06/2020:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=407a047a HTTP/1.1\" 200 2 108.334488 \"-\" \"@list-item-updater\" prio:0\n" +
                 "192.168.32.181 - - [14/06/2020:16:47:02 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=e156f7e HTTP/1.1\" 200 2 69.669118 \"-\" \"@list-item-updater\" prio:0\n";
 
-        String filename = "access.log";
-        MyFile.createFile(filename);
-        MyFile.writeToFile(filename, test);
+        createFileAndWriteTest(test);
 
         String goodResult = "14/06/2010:16:47:02 14/06/2015:16:47:02 83.33333333333334\n" +
                 "14/06/2016:16:47:02 14/06/2016:16:47:02 0.0\n" +
@@ -109,7 +86,7 @@ public class TestMain {
                 "14/06/2020:16:47:02 14/06/2020:16:47:02 0.0\n";
 
         String resToCheck = Main.run("-u 95 -t 50 -test".split(" "));
-        MyFile.delete(filename);
+        deleteTestFile();
         assertEquals(goodResult, resToCheck);
     }
 }
