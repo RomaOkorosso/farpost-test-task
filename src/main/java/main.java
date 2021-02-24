@@ -1,6 +1,4 @@
-import java.io.*;
-import java.util.*;
-import java.nio.file.*;
+import java.io.BufferedInputStream;
 import java.util.Scanner;
 
 class Main {
@@ -11,7 +9,6 @@ class Main {
     public static void main(String[] args) {
         double allowedProcessTime = 0;
         double minUptimePercents = 0;
-        boolean fromTerminal = false;
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-t")) {
@@ -25,10 +22,10 @@ class Main {
         Scanner in = new Scanner(System.in);
         int errCount = 0, responseWithErrs = 0;
         boolean inErr = false;
-
+        String[] newLine = new String[0];
         while (in.hasNextLine()) {
             String line = in.nextLine();
-            String[] newLine = line.split(" ");
+            newLine = line.split(" ");
             int responseCode = Integer.parseInt(newLine[8]);
             float processTime = Float.parseFloat(newLine[10]);
 
@@ -52,6 +49,13 @@ class Main {
                     inErr = false;
                 }
             }
+        }
+        if (inErr) {
+            System.out.print(' ');
+            System.out.print(newLine[3].substring(1));
+            System.out.print(' ');
+            System.out.print(errCount);
+            System.out.print('\n');
         }
     }
 }

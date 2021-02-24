@@ -7,6 +7,23 @@
     <groupId>org.example</groupId>
     <artifactId>analyze</artifactId>
     <version>1</version>
+    <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <mainClass>Main</mainClass>
+                            </manifest>
+                        </archive>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                    </configuration>
+                </plugin>
+            </plugins>
+    </build>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -14,3 +31,31 @@
     </properties>
 
 </project>
+
+        <!--<build>-->
+        <!--    <plugins>-->
+        <!--        <plugin>-->
+        <!--            <artifactId>farpost</artifactId>-->
+        <!--            <configuration>-->
+        <!--                <archive>-->
+        <!--                    <manifest>-->
+        <!--                        <mainClass>src/main/java/main.java</mainClass>-->
+        <!--                    </manifest>-->
+        <!--                </archive>-->
+        <!--                <descriptorRefs>-->
+        <!--                    <descriptorRef>jar-with-dependencies</descriptorRef>-->
+        <!--                </descriptorRefs>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
+
+        <!--        <plugin>-->
+        <!--            <groupId>com</groupId>-->
+        <!--            <artifactId>farpost</artifactId>-->
+        <!--            <version>3.1</version>-->
+        <!--            <configuration>-->
+        <!--                <source>1.8</source>-->
+        <!--                <target>1.8</target>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
+        <!--    </plugins>-->
+        <!--</build>-->
